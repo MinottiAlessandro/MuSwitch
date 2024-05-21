@@ -54,8 +54,8 @@ async fn fetch_token(client: &reqwest::Client, cache: &Mutex<AuthResponseCache>)
 
     dotenv().ok();
 
-    let client_id = env::var("SPOTIFY_CLIENT_ID").expect("API_KEY must be set");
-    let client_secret = env::var("SPOTIFY_CLIENT_SECRET").expect("SECRET_KEY must be set");
+    let client_id = env::var("SPOTIFY_CLIENT_ID").expect("API_KEY must be set, create a .env file in the root of the project");
+    let client_secret = env::var("SPOTIFY_CLIENT_SECRET").expect("SECRET_KEY must be set, create a .env file in the root of the project");
 
     // Replace this URL and parameters with your API's token endpoint
     let token_url = "https://accounts.spotify.com/api/token";
