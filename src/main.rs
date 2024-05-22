@@ -31,16 +31,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Getting the playlist: {playlist_id}");
         
         let request_url = format!("https://api.spotify.com/v1/playlists/{}/tracks", playlist_id);
-        let response_body = client.get(request_url)
+        let response_body: models::spotify::Playlist = client.get(request_url)
             .bearer_auth(&access_token)
             .send()
             .await?
-            .text()
+            .json()
             .await?;
 
-        let parsed_json: serde_json::Value = serde_json::from_str(&response_body)?;
-        for i in 0..(parsed_json["total"].as_i64().unwrap() as usize) {
-            println!("{} - {}", parsed_json["items"][i]["track"]["artists"][0]["name"], parsed_json["items"][i]["track"]["name"]);
+        for elem in response_body.items {
+            let mut artists: Vec<String> = Vec::new();
+            for artist in elem.track.artists {
+                artists.push(artist.name.to_string());
+            }
+            println!("{} -> {}", artists.join(", "), elem.track.name);
         }
     }
 

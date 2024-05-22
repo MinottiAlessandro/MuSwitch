@@ -53,12 +53,12 @@ impl AuthResponseCache {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Playlist {
     href: String,
-    items: Vec<Item>,
+    pub items: Vec<Item>,
     limit: usize,
     next: Option<Value>,
     offset: usize,
     previous: Option<Value>,
-    total: usize,
+    pub total: usize,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -67,7 +67,7 @@ pub struct Item {
     added_by: AddedBy,
     is_local: bool,
     primary_color: Option<Value>,
-    track: Track,
+    pub track: Track,
     video_thumbnail: Option<VideoThumbnail>,
 }
 
@@ -91,7 +91,7 @@ pub struct Track {
     episode: bool,
     track: bool,
     album: Album,
-    artists: Vec<Artist>,
+    pub artists: Vec<Artist>,
     disc_number: usize,
     track_number: usize,
     duration_ms: usize,
@@ -99,7 +99,7 @@ pub struct Track {
     external_urls: HashMap<String, String>,
     href: String,
     id: String,
-    name: String,
+    pub name: String,
     popularity: usize,
     uri: String,
     is_local: bool,
@@ -127,7 +127,7 @@ pub struct Artist {
     external_urls: HashMap<String, String>,
     href: String,
     id: String,
-    name: String,
+    pub name: String,
     #[serde(rename = "type")]
     artist_type: String,
     uri: String,
