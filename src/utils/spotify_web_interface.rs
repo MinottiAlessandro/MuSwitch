@@ -100,8 +100,12 @@ impl WebInterface for SpotifyWebInterface {
             .await?;
         
         let mut results: Vec<String> = Vec::new();
-        for elem in response_body.items {    
-            results.push(elem.track.name);
+        for elem in response_body.items { 
+            let artists: Vec<String> = elem.track.artists.iter()
+            .map(|artist| artist.name.to_string())
+            .collect();
+            
+            results.push(artists.join("|") + ":" + &elem.track.name);
         }
 
         return Ok(results);
