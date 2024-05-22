@@ -1,5 +1,5 @@
-use std::sync::Mutex;
 use clap::{App, Arg};
+use utils::{spotify_web_interface::SpotifyWebInterface, web_interface::WebInterface};
 mod models;
 mod utils;
 
@@ -23,28 +23,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         app.print_help().unwrap();
         return Ok(());
     }
-
-    let playlist_id = app.get_matches().value_of("playlistID").unwrap().to_string();
-
-    // --- SPOTIFY ---
-    let client = reqwest::Client::new();
-    let token_cache = Mutex::new(models::spotify::AuthResponseCache::new());
-    let access_token = utils::web_interfaces::fetch_token(&client, &token_cache).await?;
     
-    let request_url = format!("https://api.spotify.com/v1/playlists/{}/tracks", playlist_id);
-    let response_body: models::spotify::Playlist = client.get(request_url)
-        .bearer_auth(&access_token)
-        .send()
-        .await?
-        .json()
-        .await?;
+    let client = reqwest::Client::new();
+    let playlist_id = app.get_matches().value_of("playlistID").unwrap().to_string();
+    let results = SpotifyWebInterface::get_playlist(&client, playlist_id).await?;
 
-    for elem in response_body.items {
-        let artists: Vec<String> = elem.track.artists.iter()
-            .map(|artist| artist.name.to_string())
-            .collect();
-
-        println!("{} -> {}", artists.join(", "), elem.track.name);
+    for song in results {
+        println!("{}", song);
     }
 
     return Ok(());

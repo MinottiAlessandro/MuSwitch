@@ -1,54 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
-use chrono::{DateTime, Utc, Duration};
-
-#[derive(Deserialize, Debug)]
-pub struct AuthResponse {
-    access_token: String,
-    // token_type: String, // not used
-    expires_in: i64,
-}
-
-impl AuthResponse {
-    pub fn get_token(&self) -> &str {
-        return &self.access_token;
-    }
-
-    pub fn get_expiration(&self) -> i64 {
-        return self.expires_in;
-    }
-}
-
-pub struct AuthResponseCache {
-    access_token: Option<String>,
-    // token_type: Option<String>, // not used
-    expiration: Option<DateTime<Utc>>,
-}
-
-impl AuthResponseCache {
-    pub fn new() -> Self {
-        AuthResponseCache {
-            access_token: None,
-            // token_type: None, // not used
-            expiration: None,
-        }
-    }
-
-    pub fn get_token(&mut self) -> Option<String> {
-        if let (Some(token), Some(expiration)) = (&self.access_token, &self.expiration) {
-            if *expiration > Utc::now() {
-                return Some(token.clone());
-            }
-        }
-        return None;
-    }
-
-    pub fn set_token(&mut self, token: String, expires_in: i64) {
-        self.access_token = Some(token);
-        self.expiration = Some(Utc::now() + Duration::seconds(expires_in));
-    }
-}
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Playlist {
