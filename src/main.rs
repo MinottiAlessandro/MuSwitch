@@ -30,8 +30,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let token_cache = Mutex::new(models::spotify::AuthResponseCache::new());
     let access_token = utils::web_interfaces::fetch_token(&client, &token_cache).await?;
-
-    println!("Getting the playlist: {playlist_id}");
     
     let request_url = format!("https://api.spotify.com/v1/playlists/{}/tracks", playlist_id);
     let response_body: models::spotify::Playlist = client.get(request_url)
