@@ -1,14 +1,12 @@
-use std::sync::Mutex;
+use chrono::{DateTime, Utc};
 
 pub trait WebInterface {
-    type Cache: AuthResponseCache;
-
-    async fn fetch_token(client: &reqwest::Client, cache: &Mutex<Self::Cache>) -> Result<String, Box<dyn std::error::Error>>;
-    async fn get_playlist(client: &reqwest::Client, playlist_id: String) -> Result<Vec<String>, Box<dyn std::error::Error>>;
+    fn new() -> Self;
+    async fn fetch_token(&mut self, client: &reqwest::Client) -> Result<String, Box<dyn std::error::Error>>;
+    async fn get_playlist(&mut self, client: &reqwest::Client, playlist_id: &str) -> Result<Vec<String>, Box<dyn std::error::Error>>;
 }
 
-pub trait AuthResponseCache: Sized + 'static {
+pub trait AuthResponse: Sized + 'static {
     fn new() -> Self;
-    fn get_token(&mut self) -> Option<String>;
-    fn set_token(&mut self, token: String, expires_in: i64);
+    fn get_token(&mut self, retrieve_date: DateTime<Utc>) -> Option<String>;
 }

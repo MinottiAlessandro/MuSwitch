@@ -6,7 +6,7 @@ mod utils;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut app = App::new("My Program")
+    let mut app = App::new("MuSwitch")
     .version("0.1.0")
     .author("Alessandro Minotti")
     .about("A tool to copy playlist")
@@ -23,12 +23,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         app.print_help().unwrap();
         return Ok(());
     }
-    
-    let client = reqwest::Client::new();
-    let playlist_id = app.get_matches().value_of("playlistID").unwrap().to_string();
-    let results = SpotifyWebInterface::get_playlist(&client, playlist_id).await?;
 
-    for song in results {
+    let client = reqwest::Client::new();
+    let mut sc: SpotifyWebInterface = SpotifyWebInterface::new();
+    let playlist_id = app.get_matches().value_of("playlistID").unwrap().to_string();
+
+    let results = sc.get_playlist(&client, &playlist_id).await;
+    for song in results.unwrap() {
         println!("{}", song);
     }
 
