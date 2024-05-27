@@ -2,6 +2,13 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 
+pub struct ApiEndpoints;
+
+impl ApiEndpoints {
+    pub const AUTH: &'static str = "https://accounts.spotify.com/api/token";
+    pub const GET_PLAYLIST: &'static str = "https://api.spotify.com/v1/playlists/{}/tracks";
+}
+
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Playlist {
     href: String,

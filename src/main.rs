@@ -1,12 +1,10 @@
 use clap::{App, Arg};
-use utils::{spotify_web_interface::SpotifyWebInterface, web_interface::WebInterface};
+use utils::{spotify_interface::SpotifyWebInterface, interfaces::WebInterface};
 mod models;
 mod utils;
 
-
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut app = App::new("MuSwitch")
+fn init_cli() -> App<'static> {
+    return App::new("MuSwitch")
     .version("0.1.0")
     .author("Alessandro Minotti")
     .about("A tool to copy playlist")
@@ -18,6 +16,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .takes_value(true)
             .help("Playlist to retrieve"),
     );
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut app = init_cli();
 
     if app.clone().get_matches().is_present("help") {
         app.print_help().unwrap();
@@ -29,8 +32,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let playlist_id = app.get_matches().value_of("playlistID").unwrap().to_string();
 
     let results = sc.get_playlist(&client, &playlist_id).await;
-    for song in results.unwrap() {
-        println!("{}", song);
+    for (song, artists) in results.unwrap() {
+        println!("song: {}, artists: {:?}", song, artists);
     }
 
     return Ok(());
