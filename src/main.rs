@@ -27,11 +27,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
-    let client = reqwest::Client::new();
     let mut sc: SpotifyWebInterface = SpotifyWebInterface::new();
     let playlist_id = app.get_matches().value_of("playlistID").unwrap().to_string();
+    let results = sc.get_playlist(&playlist_id).await;
 
-    let results = sc.get_playlist(&client, &playlist_id).await;
     for (song, artists) in results.unwrap() {
         println!("song: {}, artists: {:?}", song, artists);
     }
