@@ -48,7 +48,6 @@ impl AuthResponse for SpotifyAuthResponse {
             .json()
             .await?;
         result.retrieve_date = Some(Utc::now());
-        result.expires_in = Some(5);
 
         return Ok(result);
     }
