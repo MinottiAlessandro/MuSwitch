@@ -1,6 +1,5 @@
 use crate::{models::spotify, utils::interfaces::{AuthResponse, WebInterface}};
-use std::env;
-use std::collections::HashMap;
+use std::{env, collections::HashMap};
 use dotenv::dotenv;
 use serde::Deserialize;
 use chrono::{DateTime, Utc, Duration};
@@ -37,7 +36,8 @@ impl AuthResponse for SpotifyAuthResponse {
         let params = &[
             ("grant_type", String::from("client_credentials")),
             ("client_id", client_id),
-            ("client_secret", client_secret)
+            ("client_secret", client_secret),
+            ("scope", String::from("user-library-read"))
         ];
 
         let mut result: SpotifyAuthResponse = client
@@ -72,13 +72,56 @@ impl WebInterface for SpotifyWebInterface {
         };
     }
 
-    async fn get_playlist(&mut self, playlist_id: &str) -> Result<HashMap<String, Vec<String>>, Box<dyn std::error::Error>> {
+    async fn get_playlist_tracks(&mut self, playlist_id: &str) -> Result<HashMap<String, Vec<String>>, Box<dyn std::error::Error>> {
         let access_token = self.auth.get_token().await.unwrap();
-
         let mut results: HashMap<String, Vec<String>> = HashMap::new();
-        let request_url = spotify::ApiEndpoints::GET_PLAYLIST.replace("{}", playlist_id);
+        let request_url = spotify::ApiEndpoints::GET_PLAYLIST_TRACKS.replace("{}", playlist_id);
         let client = reqwest::Client::new();
         let response_body: spotify::Playlist = client.get(request_url)
+            .bearer_auth(&access_token)
+            .send()
+            .await?
+            .json()
+            .await?;
+
+        for elem in response_body.items {
+            results.insert(elem.track.name, elem.track.artists.iter()
+                .map(|artist| artist.name.to_string())
+                .collect()
+            );
+        }
+
+        return Ok(results);
+    }
+
+    async fn get_playlists(&mut self, user_id: &str) -> Result<HashMap<String, String>, Box<dyn std::error::Error>> {
+        let access_token = self.auth.get_token().await.unwrap();
+        let mut results: HashMap<String, String> = HashMap::new();
+        let request_url = spotify::ApiEndpoints::GET_PLAYLISTS.replace("{}", user_id);
+        let client = reqwest::Client::new();
+        let response_body: spotify::Playlists = client.get(request_url)
+            .bearer_auth(&access_token)
+            .send()
+            .await?
+            .json()
+            .await?;
+
+        for elem in response_body.items {
+            results.insert(elem.id, elem.name);
+        }
+
+        return Ok(results);
+    }
+}
+
+impl SpotifyWebInterface {
+    pub async fn get_fav_tracks(&mut self) -> Result<HashMap<String, Vec<String>>, Box<dyn std::error::Error>> {
+        let access_token = self.auth.get_token().await.unwrap();
+        println!("{}", access_token);
+        let mut results: HashMap<String, Vec<String>> = HashMap::new();
+        let request_url = spotify::ApiEndpoints::GET_FAVOURITE_TRACKS;
+        let client = reqwest::Client::new();
+        let response_body: spotify::Favourite = client.get(request_url)
             .bearer_auth(&access_token)
             .send()
             .await?
