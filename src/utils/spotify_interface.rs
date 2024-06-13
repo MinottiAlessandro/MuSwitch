@@ -4,7 +4,7 @@ use dotenv::dotenv;
 use serde::Deserialize;
 use chrono::{DateTime, Utc, Duration};
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct SpotifyAuthResponse {
     access_token: Option<String>,
     expires_in: Option<i64>,
@@ -32,12 +32,11 @@ impl AuthResponse for SpotifyAuthResponse {
             .to_string();
 
         let client = reqwest::Client::new();
-        let token_url = spotify::ApiEndpoints::AUTH;
+        let token_url = spotify::ApiEndpoints::TOKEN;
         let params = &[
             ("grant_type", String::from("client_credentials")),
             ("client_id", client_id),
             ("client_secret", client_secret),
-            ("scope", String::from("user-library-read"))
         ];
 
         let mut result: SpotifyAuthResponse = client
@@ -61,6 +60,7 @@ impl AuthResponse for SpotifyAuthResponse {
     }
 }
 
+#[derive(Clone)]
 pub struct SpotifyWebInterface {
     auth: SpotifyAuthResponse,
 }
@@ -108,31 +108,6 @@ impl WebInterface for SpotifyWebInterface {
 
         for elem in response_body.items {
             results.insert(elem.id, elem.name);
-        }
-
-        return Ok(results);
-    }
-}
-
-impl SpotifyWebInterface {
-    pub async fn get_fav_tracks(&mut self) -> Result<HashMap<String, Vec<String>>, Box<dyn std::error::Error>> {
-        let access_token = self.auth.get_token().await.unwrap();
-        println!("{}", access_token);
-        let mut results: HashMap<String, Vec<String>> = HashMap::new();
-        let request_url = spotify::ApiEndpoints::GET_FAVOURITE_TRACKS;
-        let client = reqwest::Client::new();
-        let response_body: spotify::Favourite = client.get(request_url)
-            .bearer_auth(&access_token)
-            .send()
-            .await?
-            .json()
-            .await?;
-
-        for elem in response_body.items {
-            results.insert(elem.track.name, elem.track.artists.iter()
-                .map(|artist| artist.name.to_string())
-                .collect()
-            );
         }
 
         return Ok(results);

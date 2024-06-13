@@ -5,10 +5,9 @@ use std::collections::HashMap;
 pub struct ApiEndpoints;
 
 impl ApiEndpoints {
-    pub const AUTH: &'static str = "https://accounts.spotify.com/api/token";
+    pub const TOKEN: &'static str = "https://accounts.spotify.com/api/token";
     pub const GET_PLAYLIST_TRACKS: &'static str = "https://api.spotify.com/v1/playlists/{}/tracks";
     pub const GET_PLAYLISTS: &'static str = "https://api.spotify.com/v1/users/{}/playlists";
-    pub const GET_FAVOURITE_TRACKS: &'static str = "https://api.spotify.com/v1/me/tracks";
 }
 
 // --- Playlist Tracks ---
