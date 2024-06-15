@@ -2,6 +2,7 @@ use std::{env, collections::HashMap};
 use crate::utils::interfaces::WebInterface;
 use crate::models::youtube;
 use dotenv::dotenv;
+use reqwest::Client;
 
 pub struct YouTubeWebInterface;
 
@@ -32,7 +33,7 @@ impl WebInterface for YouTubeWebInterface {
             .await?;
 
         for elem in response_body.items {
-            results.insert(elem.snippet.title, vec![elem.snippet.videoOwnerChannelTitle]);
+            results.insert(elem.snippet.title, vec![elem.snippet.videoOwnerChannelTitle.unwrap()]);
         }
 
         return Ok(results);
@@ -67,6 +68,28 @@ impl WebInterface for YouTubeWebInterface {
     }
 
     async fn find_track(&mut self, song: &str, artists: Vec<&str>) -> Result<bool, Box<dyn std::error::Error>> {
+        dotenv().ok();
+        let api_key = env::var("YOUTUBE_API_KEY")
+            .expect("API_KEY must be set, create a .env file in the root of the project")
+            .to_string();
+        let  params = &[
+            ("q", format!("{} {}", song, artists.join(", "))),
+            ("key", api_key),
+            ("part", String::from("snippet")),
+        ];
+
+        let client = reqwest::Client::new();
+        let response_body: youtube::YouTubeSearchListResponse = client.get(youtube::ApiEndpoints::SEARCH)
+            .query(&params)
+            .send()
+            .await?
+            .json()
+            .await?;
+
+        for elem in response_body.items {
+            println!("{}", elem.snippet.title);
+        }
+
         return Ok(true);
     }
 }

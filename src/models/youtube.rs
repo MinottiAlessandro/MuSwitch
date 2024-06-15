@@ -5,6 +5,7 @@ pub struct ApiEndpoints;
 impl ApiEndpoints {
     pub const GET_PLAYLISTS: &'static str = "https://www.googleapis.com/youtube/v3/playlists";
     pub const GET_PLAYLISTS_TRACKS: &'static str = "https://www.googleapis.com/youtube/v3/playlistItems";
+    pub const SEARCH: &'static str = "https://www.googleapis.com/youtube/v3/search";
 }
 
 // --- Playlist Tracks ---
@@ -34,11 +35,11 @@ pub struct Snippet {
     description: String,
     thumbnails: Thumbnails,
     channelTitle: String,
-    pub playlistId: String,
-    position: u32,
-    resourceId: ResourceId,
-    pub videoOwnerChannelTitle: String,
-    pub videoOwnerChannelId: String,
+    pub playlistId: Option<String>,
+    position: Option<u32>,
+    resourceId: Option<ResourceId>,
+    pub videoOwnerChannelTitle: Option<String>,
+    pub videoOwnerChannelId: Option<String>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -46,8 +47,8 @@ pub struct Thumbnails {
     default: Thumbnail,
     medium: Thumbnail,
     high: Thumbnail,
-    standard: Thumbnail,
-    maxres: Thumbnail,
+    standard: Option<Thumbnail>,
+    maxres: Option<Thumbnail>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -55,13 +56,6 @@ pub struct Thumbnail {
     url: String,
     width: u32,
     height: u32,
-}
-
-#[derive(Deserialize, Serialize, Debug)]
-#[allow(non_snake_case)]
-pub struct ResourceId {
-    kind: String,
-    pub videoId: String,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -105,4 +99,33 @@ pub struct PlaylistSnippet {
 pub struct Localized {
     title: String,
     description: String,
+}
+
+// --- Search ---
+#[derive(Debug, Serialize, Deserialize)]
+#[allow(non_snake_case)]
+pub struct YouTubeSearchListResponse {
+    pub kind: String,
+    pub etag: String,
+    pub nextPageToken: Option<String>,
+    pub regionCode: String,
+    pub pageInfo: PageInfo,
+    pub items: Vec<SearchResult>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct SearchResult {
+    pub kind: String,
+    pub etag: String,
+    pub id: ResourceId,
+    pub snippet: Snippet,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[allow(non_snake_case)]
+pub struct ResourceId {
+    pub kind: String,
+    pub videoId: Option<String>,
+    pub channelId: Option<String>,
+    pub playlistId: Option<String>,
 }

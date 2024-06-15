@@ -38,10 +38,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let s = "Ramaya";
     let a = vec!["Afrik Simon"];
     // let user_id = app.get_matches().value_of("userID").unwrap().to_string();
-    let mut sc = SpotifyWebInterface::new();
-    sc.find_track(s, a).await?;
+    // let mut sc = SpotifyWebInterface::new();
+    // sc.find_track(s, a).await?;
     // let playlists = sc.get_playlists(&user_id).await?;
-
     // for (id, name) in playlists {
     //     let songs = sc.get_playlist_tracks(&id).await?;
     //     for (song, artist) in songs {
@@ -49,7 +48,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //     }
     // }
 
-    // let mut yc = YouTubeWebInterface::new();
+    let mut yc = YouTubeWebInterface::new();
+    yc.find_track(s, a).await?;
     // let playlists = yc.get_playlists(&user_id).await?;
 
     // for (id, playlist) in playlists {

@@ -166,25 +166,6 @@ pub struct Restrictions {
     reason: String,
 }
 
-// #[derive(Debug, Deserialize, Serialize)]
-// pub struct Album {
-//     album_type: String,
-//     total_tracks: u32,
-//     available_markets: Vec<String>,
-//     external_urls: ExternalUrls,
-//     href: String,
-//     id: String,
-//     images: Vec<Image>,
-//     name: String,
-//     release_date: String,
-//     release_date_precision: String,
-//     restrictions: Option<Restrictions>,
-//     #[serde(rename = "type")]
-//     type_: String,
-//     uri: String,
-//     artists: Vec<Artist>,
-// }
-
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ExternalIds {
     isrc: String,
@@ -213,37 +194,6 @@ pub struct TrackArtist {
     uri: String,
 }
 
-// #[derive(Debug, Deserialize, Serialize)]
-// pub struct Track {
-//     album: Album,
-//     artists: Vec<TrackArtist>,
-//     available_markets: Vec<String>,
-//     disc_number: u32,
-//     duration_ms: u32,
-//     explicit: bool,
-//     external_ids: ExternalIds,
-//     external_urls: ExternalUrls,
-//     href: String,
-//     id: String,
-//     is_playable: Option<bool>,
-//     linked_from: Option<serde_json::Value>,
-//     restrictions: Option<Restrictions>,
-//     name: String,
-//     popularity: u32,
-//     preview_url: Option<String>,
-//     track_number: u32,
-//     #[serde(rename = "type")]
-//     type_: String,
-//     uri: String,
-//     is_local: bool,
-// }
-//
-// #[derive(Debug, Deserialize, Serialize)]
-// pub struct Item {
-//     added_at: String,
-//     track: Track,
-// }
-
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Favourite {
     href: String,
@@ -271,44 +221,3 @@ pub struct Albums {
     previous: Option<String>,
     total: i32,
 }
-
-// #[derive(Debug, Serialize, Deserialize)]
-// struct Album {
-//     album_type: String,
-//     artists: Vec<Artist>,
-//     available_markets: Vec<String>,
-//     external_urls: ExternalUrls,
-//     href: String,
-//     id: String,
-//     images: Vec<Image>,
-//     name: String,
-//     release_date: String,
-//     release_date_precision: String,
-//     total_tracks: i32,
-//     #[serde(rename = "type")]
-//     album_type: String,
-//     uri: String,
-// }
-//
-// #[derive(Debug, Serialize, Deserialize)]
-// struct Artist {
-//     external_urls: ExternalUrls,
-//     href: String,
-//     id: String,
-//     name: String,
-//     #[serde(rename = "type")]
-//     artist_type: String,
-//     uri: String,
-// }
-//
-// #[derive(Debug, Serialize, Deserialize)]
-// struct ExternalUrls {
-//     spotify: String,
-// }
-//
-// #[derive(Debug, Serialize, Deserialize)]
-// struct Image {
-//     height: i32,
-//     url: String,
-//     width: i32,
-// }
