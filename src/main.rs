@@ -1,5 +1,5 @@
 use clap::{App, Arg};
-use utils::{interfaces::WebInterface, youtube_interface::YouTubeWebInterface};
+use utils::{interfaces::WebInterface, youtube_interface::YouTubeWebInterface, spotify_interface::SpotifyWebInterface};
 mod models;
 mod utils;
 
@@ -35,8 +35,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
-    let user_id = app.get_matches().value_of("userID").unwrap().to_string();
-    // let mut sc = SpotifyWebInterface::new();
+    let s = "Ramaya";
+    let a = vec!["Afrik Simon"];
+    // let user_id = app.get_matches().value_of("userID").unwrap().to_string();
+    let mut sc = SpotifyWebInterface::new();
+    sc.find_track(s, a).await?;
     // let playlists = sc.get_playlists(&user_id).await?;
 
     // for (id, name) in playlists {
@@ -46,16 +49,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //     }
     // }
 
-    let mut yc = YouTubeWebInterface::new();
-    let playlists = yc.get_playlists(&user_id).await?;
+    // let mut yc = YouTubeWebInterface::new();
+    // let playlists = yc.get_playlists(&user_id).await?;
 
-    for (id, playlist) in playlists {
-        println!("{} - {}", id, playlist);
-        let songs = yc.get_playlist_tracks(&id).await?;
-        for (song, artists) in songs {
-            println!("\t{} - {:?}", song, artists);
-        }
-    }
+    // for (id, playlist) in playlists {
+    //     println!("{} - {}", id, playlist);
+    //     let songs = yc.get_playlist_tracks(&id).await?;
+    //     for (song, artists) in songs {
+    //         println!("\t{} - {:?}", song, artists);
+    //     }
+    // }
 
     return Ok(());
 }

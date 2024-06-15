@@ -112,4 +112,26 @@ impl WebInterface for SpotifyWebInterface {
 
         return Ok(results);
     }
+
+    async fn find_track(&mut self, song: &str, artists: Vec<&str>) -> Result<bool, Box<dyn std::error::Error>> {
+        let access_token = self.auth.get_token().await.unwrap();
+        let params = &[
+            ("q", format!("{} {}", String::from(song), artists.join(", "))),
+            ("type", String::from("track")),
+        ];
+        let client = reqwest::Client::new();
+        let response_body: spotify::Search = client.get(spotify::ApiEndpoints::SEARCH)
+            .bearer_auth(&access_token)
+            .query(&params)
+            .send()
+            .await?
+            .json()
+            .await?;
+
+        for elem in response_body.tracks.items {
+            println!("{}", elem.name);
+        }
+
+        return Ok(true);
+    }
 }

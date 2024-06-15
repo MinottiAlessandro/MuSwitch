@@ -8,10 +8,10 @@ impl ApiEndpoints {
     pub const TOKEN: &'static str = "https://accounts.spotify.com/api/token";
     pub const GET_PLAYLIST_TRACKS: &'static str = "https://api.spotify.com/v1/playlists/{}/tracks";
     pub const GET_PLAYLISTS: &'static str = "https://api.spotify.com/v1/users/{}/playlists";
+    pub const SEARCH: &'static str = "https://api.spotify.com/v1/search";
 }
 
 // --- Playlist Tracks ---
-
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Playlist {
     href: String,
@@ -74,14 +74,14 @@ pub struct Album {
     album_type: String,
     href: String,
     id: String,
-    images: Vec<Image>,
-    name: String,
-    release_date: String,
-    release_date_precision: String,
+    images: Option<Vec<Image>>,
+    pub name: String,
+    release_date: Option<String>,
+    release_date_precision: Option<String>,
     uri: String,
-    artists: Vec<Artist>,
+    pub artists: Vec<Artist>,
     external_urls: HashMap<String, String>,
-    total_tracks: usize,
+    total_tracks: Option<usize>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -108,7 +108,6 @@ pub struct VideoThumbnail {
 }
 
 // --- Playlist ---
-
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ExternalUrls {
     spotify: String,
@@ -255,3 +254,61 @@ pub struct Favourite {
     total: u32,
     pub items: Vec<Item>,
 }
+
+// --- Search ---
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Search {
+    pub tracks: Albums,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Albums {
+    href: String,
+    pub items: Vec<Album>,
+    limit: i32,
+    next: Option<String>,
+    offset: i32,
+    previous: Option<String>,
+    total: i32,
+}
+
+// #[derive(Debug, Serialize, Deserialize)]
+// struct Album {
+//     album_type: String,
+//     artists: Vec<Artist>,
+//     available_markets: Vec<String>,
+//     external_urls: ExternalUrls,
+//     href: String,
+//     id: String,
+//     images: Vec<Image>,
+//     name: String,
+//     release_date: String,
+//     release_date_precision: String,
+//     total_tracks: i32,
+//     #[serde(rename = "type")]
+//     album_type: String,
+//     uri: String,
+// }
+//
+// #[derive(Debug, Serialize, Deserialize)]
+// struct Artist {
+//     external_urls: ExternalUrls,
+//     href: String,
+//     id: String,
+//     name: String,
+//     #[serde(rename = "type")]
+//     artist_type: String,
+//     uri: String,
+// }
+//
+// #[derive(Debug, Serialize, Deserialize)]
+// struct ExternalUrls {
+//     spotify: String,
+// }
+//
+// #[derive(Debug, Serialize, Deserialize)]
+// struct Image {
+//     height: i32,
+//     url: String,
+//     width: i32,
+// }

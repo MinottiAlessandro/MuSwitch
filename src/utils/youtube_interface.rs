@@ -65,4 +65,8 @@ impl WebInterface for YouTubeWebInterface {
 
         return Ok(results);
     }
+
+    async fn find_track(&mut self, song: &str, artists: Vec<&str>) -> Result<bool, Box<dyn std::error::Error>> {
+        return Ok(true);
+    }
 }
